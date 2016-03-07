@@ -1,4 +1,6 @@
+# -*- coding: utf-8 -*-
 from PIL import Image, ImageDraw, ImageSequence
+from src import helper
 import random
 from math import floor
 
@@ -32,7 +34,7 @@ def similar(point, source, candidate):
     if source_pixel == candidate_pixel:
         return 1
     else:
-        return -1
+        return -10000
 
 """
 def get_line_equation(p1, p2):
@@ -41,12 +43,14 @@ def get_line_equation(p1, p2):
      : ((m*x) - (m*p1[0]) - y - p1[1]) == 0)
 """
 
-class Im(object):
+class Organism(object):
     MODE = "RGB"
     BG_FILL = (255,255,255)
     LINE_FILL = (0,0,0)
-    LINES_PER_GEN = 25
-    PROB_NEWLINE = .3
+
+    GROW_ITERATIONS     = 20
+    PROB_NEWLINE        = .3
+    PROB_CHANGEDLINE    = .1
 
     def __init__(self, source_image, lines=[]):
         self.source = source_image
@@ -55,10 +59,8 @@ class Im(object):
         self.draw = ImageDraw.Draw(self.im)
         self.points = set()
         self.lines = lines
-
-    def simulate(self):
-        for i in range(self.LINES_PER_GEN):
-            self.make_line()
+        if lines:
+            self.generate_from_lines()
 
     """
     def _generate_points(self):
@@ -70,30 +72,37 @@ class Im(object):
                     self.points.union( set( [(x, f(x))  ) )
     """
 
+    def generate_from_lines(self):
+        for p1, p2 in self.lines:
+            self.draw.line( (p1, p2), self.LINE_FILL, 2)
+
     def make_line(self):
-        p1, p2 = edge_tuple(self.size)
-        self.draw.line( (p1, p2), self.LINE_FILL, 2)
-        self.lines.append((p1, p2))
+        return edge_tuple(self.size)
 
     def mutate(self):
         new_lines = []
+        for i in range(self.GROW_ITERATIONS):
+            if random.random() < self.PROB_NEWLINE:
+                new_lines.append(self.make_line())
         for p1, p2 in self.lines:
             for x,y in (p1, p2):
-                if random.random() < self.PROB_NEWLINE:
-                    magnitude = random.random()
-                    direction = random.randint(-1, 0)
+                if random.random() < self.PROB_CHANGEDLINE:
+                    magnitude = random.random() * self.size[0]
+                    direction = random.choice([-1, 1])
                     x = x*magnitude*direction
-                if random.random() < self.PROB_NEWLINE:
-                    magnitude = random.random()
-                    direction = random.randint(-1, 0)
+                if random.random() < self.PROB_CHANGEDLINE:
+                    magnitude = random.random() * self.size[1]
+                    direction = random.choice([-1, 1])
                     y = y*magnitude*direction
             new_lines.append( (p1, p2) )
-        return Im(self.source, new_lines)
+        return Organism(self.source, new_lines)
 
     def compare(self):
-
         total_score = 0
         for x in range(self.size[0]):
             for y in range(self.size[1]):
                 total_score += similar((x,y), self.source, self.im)
         return total_score
+
+    def __repr__(self):
+        return u"生活"
