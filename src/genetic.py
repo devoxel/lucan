@@ -17,4 +17,6 @@ def evaluate(organisms, verbose):
 
 def create_new_candiditates(candidates, total):
     best = candidates[0][0]
-    return [best].extend( [best.mutate() for x in range(total)] )
+    new = [best]
+    new.extend( [best.mutate() for x in range(total)] )
+    return new
