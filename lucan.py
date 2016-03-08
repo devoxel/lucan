@@ -36,8 +36,8 @@ def arg_parse():
     pass
 
 def cli():
-    Generations = 10
-    Organisms_Per_Gen = 10
+    Generations = 100
+    Organisms_Per_Gen = 20
     Verbose = True
 
     source = image.open(sys.argv[1])
