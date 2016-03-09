@@ -36,17 +36,17 @@ def arg_parse():
     pass
 
 def cli():
-    Generations = 100
-    Organisms_Per_Gen = 20
+    Generations = 10
+    Organisms_Per_Gen = 100
     Verbose = True
 
     source = image.open(sys.argv[1])
     organisms = genetic.init_organisms(source, Organisms_Per_Gen, verbose=Verbose)
 
+    current_generations = 0
     for i in range(Generations):
-        evaluated = genetic.evaluate(organisms, verbose=Verbose)
+        evaluated = genetic.evaluate(organisms, Verbose, i)
         organisms = genetic.create_new_candiditates(evaluated, Organisms_Per_Gen)
-
     evaluated[0][0].im.show()
 
 if __name__ == "__main__":

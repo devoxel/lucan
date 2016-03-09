@@ -8,11 +8,11 @@ def init_organisms(source_image, amount, verbose):
     if verbose: helper.log('initiated {} organisms', len(organisms))
     return organisms
 
-def evaluate(organisms, verbose):
+def evaluate(organisms, verbose, current_generations):
     """Returns a list of (organism, score) tuples sorted by score, highest first"""
     evaluated = [ ( org, org.compare() ) for org in organisms ]
     evaluated = sorted(evaluated, key=lambda x: x[1], reverse=True)
-    if verbose: helper.log('evaluated organisms: {}', evaluated)
+    if verbose: helper.log('evaluated organisms, gen {}', current_generations)
     return evaluated
 
 def create_new_candiditates(candidates, total):
