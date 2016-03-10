@@ -13,6 +13,7 @@ Required
 - Python 2
 
 - Pillow
+- 
   `pip install pillow`
 
 CLI
