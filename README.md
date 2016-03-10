@@ -10,8 +10,10 @@ Version 0.0.2
 Required
 ========
 
-- Python 3
+- Python 2
+
 - Pillow
+  `pip install pillow`
 
 CLI
 ===
